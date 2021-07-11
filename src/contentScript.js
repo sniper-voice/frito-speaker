@@ -1,3 +1,5 @@
+let chatCount = 0
+
 main()
 
 function observeComments(target, callback) {
@@ -73,16 +75,41 @@ function waitForChatContainer() {
 
 async function speak(message) {
   const items = await getStorageValues()
-  if (items.mute === 'on') {
+
+  const spokenCount = parseFloat(items.spokenCount)
+  if (chatCount < spokenCount) {
     return
   }
 
-  const utterance = new SpeechSynthesisUtterance(message)
-  utterance.lang = 'ja-JP'
-  utterance.volume = parseFloat(items.volume)
-  utterance.pitch = parseFloat(items.pitch)
-  utterance.rate = parseFloat(items.rate)
-  speechSynthesis.speak(utterance)
+  if (items.mute !== 'on') {
+    const utterance = new SpeechSynthesisUtterance(message)
+    utterance.lang = 'ja-JP'
+    utterance.volume = parseFloat(items.volume)
+    utterance.pitch = parseFloat(items.pitch)
+    utterance.rate = parseFloat(items.rate)
+    speechSynthesis.speak(utterance)
+  }
+
+  await setSpokenCount(spokenCount + 1)
+}
+
+function setSpokenCount(spokenCount) {
+  return setStorageValue('spokenCount', spokenCount.toString())
+}
+
+function setPreviousPathname(previousPathname) {
+  return setStorageValue('previousPathname', previousPathname)
+}
+
+function setStorageValue(key, value) {
+  return new Promise((resolve, reject) => {
+    chrome.storage.sync.set({ [key]: value }, () => {
+      if (chrome.runtime.lastError) {
+        return reject(chrome.runtime.lastError)
+      }
+      resolve()
+    })
+  })
 }
 
 function getStorageValues() {
@@ -97,6 +124,13 @@ function getStorageValues() {
 }
 
 async function main() {
+  const items = await getStorageValues()
+
+  if (items.previousPathname !== location.pathname) {
+    await setPreviousPathname(location.pathname)
+    await setSpokenCount(0)
+  }
+
   let chatContainer = document.querySelector('.chatContainer__statusOpen__chat')
 
   if (!chatContainer) {
@@ -104,6 +138,7 @@ async function main() {
   }
 
   observeComments(chatContainer, async (type, name, comment) => {
-    speak(comment)
+    await speak(comment)
+    chatCount++
   })
 }
