@@ -18,7 +18,7 @@ function observeComments(target, callback) {
             '.chat__contents__comment'
           ).innerText
           callback('comment', name, comment)
-        } else if (classes.includes('joinRoomChat')) {
+        } else if (node.classList.contains('joinRoomChat')) {
           callback('join', null, node.innerText)
         }
       }
