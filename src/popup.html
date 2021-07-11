@@ -2,13 +2,42 @@
 <html lang="ja">
   <head>
     <meta charset="utf-8" />
-    <link rel="stylesheet" href="button.css" />
+    <style>
+      #muteButton {
+        width: 100%;
+      }
+    </style>
   </head>
   <body>
-    <button id="mutoButton">Mute</button>
-    <select>
-      <option>日本語</option>
-    </select>
+    <div>
+      <button id="muteButton">ミュート</button>
+    </div>
+    <div>
+      <label form="volumeInput">ボリューム</label
+      ><input
+        id="volumeInput"
+        type="range"
+        min="0"
+        max="1"
+        step="0.1"
+        value="1"
+      />
+    </div>
+    <div>
+      <label form="pitchInput">ピッチ</label
+      ><input
+        id="pitchInput"
+        type="range"
+        min="0"
+        max="2"
+        step="0.1"
+        value="1"
+      />
+    </div>
+    <div>
+      <label form="rateInput">スピード</label
+      ><input id="rateInput" type="range" min="0.1" max="10" step="0.1" />
+    </div>
     <script src="popup.js"></script>
   </body>
 </html>
