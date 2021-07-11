@@ -12,22 +12,23 @@ async function init() {
     await setMuted(newValue)
   })
 
-  const volume = await getVolume()
   const volumeInput = document.getElementById('volumeInput')
-  volumeInput.value = volume
+  volumeInput.value = await getVolume()
   volumeInput.addEventListener('change', async (ev) => {
     await setVolume(ev.target.value)
   })
 
-  const pitch = await getPitch()
   const pitchInput = document.getElementById('pitchInput')
-  pitchInput.value = pitch
+  pitchInput.value = await getPitch()
   pitchInput.addEventListener('change', async (ev) => {
     await setPitch(ev.target.value)
   })
 
   const rateInput = document.getElementById('rateInput')
-  rateInput.addEventListener('change', (ev) => {})
+  rateInput.value = await getRate()
+  rateInput.addEventListener('change', async (ev) => {
+    await setRate(ev.target.value)
+  })
 }
 
 function setMuted(isMuted) {
