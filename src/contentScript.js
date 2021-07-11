@@ -36,6 +36,10 @@ function observeComments(target, callback) {
 function waitForChatContainer() {
   return new Promise((resolve) => {
     const observer = new MutationObserver((mutationList) => {
+      if (!location.pathname.startsWith('/free/stage/')) {
+        return
+      }
+
       for (const mutation of mutationList) {
         if (mutation.type !== 'childList') {
           continue
@@ -124,17 +128,15 @@ function getStorageValues() {
 }
 
 async function main() {
-  const items = await getStorageValues()
+  let chatContainer = document.querySelector('.chatContainer__statusOpen__chat')
+  if (!chatContainer) {
+    chatContainer = await waitForChatContainer()
+  }
 
+  const items = await getStorageValues()
   if (items.previousPathname !== location.pathname) {
     await setPreviousPathname(location.pathname)
     await setSpokenCount(0)
-  }
-
-  let chatContainer = document.querySelector('.chatContainer__statusOpen__chat')
-
-  if (!chatContainer) {
-    chatContainer = await waitForChatContainer()
   }
 
   observeComments(chatContainer, async (type, name, comment) => {
