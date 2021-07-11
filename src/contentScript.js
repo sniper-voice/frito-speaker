@@ -71,35 +71,14 @@ function waitForChatContainer() {
   })
 }
 
-function speak(voice, message) {
+function speak(message) {
   const utterance = new SpeechSynthesisUtterance(message)
   utterance.voice = voice
+  utterance.lang = 'ja-JP'
   speechSynthesis.speak(utterance)
 }
 
-function waintForJapaneseVoice() {
-  return new Promise((resolve) => {
-    const voice = speechSynthesis
-      .getVoices()
-      .find((voice) => voice.lang === 'ja-JP')
-    if (voice) {
-      resolve(voice)
-    }
-
-    speechSynthesis.addEventListener('voiceschanged', () => {
-      const voice = speechSynthesis
-        .getVoices()
-        .find((voice) => voice.lang === 'ja-JP')
-      if (voice) {
-        resolve(voice)
-      }
-    })
-  })
-}
-
 async function main() {
-  const jaVoice = await waintForJapaneseVoice()
-
   let chatContainer = document.querySelector('.chatContainer__statusOpen__chat')
 
   if (!chatContainer) {
@@ -107,6 +86,6 @@ async function main() {
   }
 
   observeComments(chatContainer, (type, name, comment) => {
-    speak(jaVoice, comment)
+    speak(comment)
   })
 }
