@@ -6,7 +6,10 @@
   "permissions": ["declarativeContent", "storage"],
   "content_scripts": [
     {
-      "matches": ["https://stage.boikone.jp/free/stage/*"],
+      "matches": [
+        "https://stage.boikone.jp/free/stage/*",
+        "https://stage.boikone.jp/free/create"
+      ],
       "js": ["contentScript.js"]
     }
   ],
