@@ -1,0 +1,12 @@
+{
+  "name": "frito-speaker",
+  "version": "0.0.1",
+  "main": "contentScript.js",
+  "license": "MIT",
+  "scripts": {
+    "prettify": "prettier --write ."
+  },
+  "dependencies": {
+    "prettier": "^2.3.2"
+  }
+}
