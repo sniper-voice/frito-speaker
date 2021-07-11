@@ -71,11 +71,29 @@ function waitForChatContainer() {
   })
 }
 
-function speak(message) {
+async function speak(message) {
+  const items = await getStorageValues()
+  if (items.mute === 'on') {
+    return
+  }
+
   const utterance = new SpeechSynthesisUtterance(message)
-  utterance.voice = voice
   utterance.lang = 'ja-JP'
+  utterance.volume = parseFloat(items.volume)
+  utterance.pitch = parseFloat(items.pitch)
+  utterance.rate = parseFloat(items.rate)
   speechSynthesis.speak(utterance)
+}
+
+function getStorageValues() {
+  return new Promise((resolve, reject) => {
+    chrome.storage.sync.get(null, (items) => {
+      if (chrome.runtime.lastError) {
+        return reject(chrome.runtime.lastError)
+      }
+      resolve(items)
+    })
+  })
 }
 
 async function main() {
@@ -85,7 +103,7 @@ async function main() {
     chatContainer = await waitForChatContainer()
   }
 
-  observeComments(chatContainer, (type, name, comment) => {
+  observeComments(chatContainer, async (type, name, comment) => {
     speak(comment)
   })
 }

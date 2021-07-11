@@ -1,23 +1,24 @@
-function getStorageValue(key, defaultValue) {
-  return new Promise((resolve, reject) => {
-    chrome.storage.sync.get({ [key]: defaultValue }, (items) => {
-      if (chrome.runtime.lastError) {
-        return reject(chrome.runtime.lastError)
-      }
-      resolve(items[key])
-    })
-  })
-}
-
-function getMuted() {
-  return getStorageValue('mute', 'off').then((mute) => mute === 'on')
-}
-
 chrome.runtime.onInstalled.addListener(() => {
   chrome.action.disable()
 
-  getMuted().then((isMuted) => {
-    chrome.action.setBadgeText({ text: isMuted ? 'MUTE' : '' })
+  chrome.storage.sync.get(null, (items) => {
+    chrome.action.setBadgeText({ text: items.mute === 'on' ? 'MUTE' : '' })
+
+    if (items.mute === undefined) {
+      chrome.storage.sync.set({ mute: 'off' })
+    }
+
+    if (items.volume === undefined) {
+      chrome.storage.sync.set({ volume: '1.0' })
+    }
+
+    if (items.pitch === undefined) {
+      chrome.storage.sync.set({ pitch: '1.0' })
+    }
+
+    if (items.rate === undefined) {
+      chrome.storage.sync.set({ rate: '1.0' })
+    }
   })
 
   chrome.declarativeContent.onPageChanged.removeRules(undefined, () => {

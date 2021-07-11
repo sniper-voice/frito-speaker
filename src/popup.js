@@ -36,7 +36,7 @@ function setMuted(isMuted) {
 }
 
 function getMuted() {
-  return getStorageValue('mute', 'off').then((mute) => mute === 'on')
+  return getStorageValue('mute').then((mute) => mute === 'on')
 }
 
 function setVolume(volume) {
@@ -44,7 +44,7 @@ function setVolume(volume) {
 }
 
 function getVolume() {
-  return getStorageValue('volume', 1.0)
+  return getStorageValue('volume')
 }
 
 function setPitch(pitch) {
@@ -52,7 +52,7 @@ function setPitch(pitch) {
 }
 
 function getPitch() {
-  return getStorageValue('pitch', 1.0)
+  return getStorageValue('pitch')
 }
 
 function setRate(rate) {
@@ -60,7 +60,7 @@ function setRate(rate) {
 }
 
 function getRate() {
-  return getStorageValue('rate', 1.0)
+  return getStorageValue('rate')
 }
 
 function setStorageValue(key, value) {
@@ -74,9 +74,9 @@ function setStorageValue(key, value) {
   })
 }
 
-function getStorageValue(key, defaultValue) {
+function getStorageValue(key) {
   return new Promise((resolve, reject) => {
-    chrome.storage.sync.get({ [key]: defaultValue }, (items) => {
+    chrome.storage.sync.get(key, (items) => {
       if (chrome.runtime.lastError) {
         return reject(chrome.runtime.lastError)
       }
