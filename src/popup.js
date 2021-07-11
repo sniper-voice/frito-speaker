@@ -19,8 +19,12 @@ async function init() {
     await setVolume(ev.target.value)
   })
 
+  const pitch = await getPitch()
   const pitchInput = document.getElementById('pitchInput')
-  pitchInput.addEventListener('change', (ev) => {})
+  pitchInput.value = pitch
+  pitchInput.addEventListener('change', async (ev) => {
+    await setPitch(ev.target.value)
+  })
 
   const rateInput = document.getElementById('rateInput')
   rateInput.addEventListener('change', (ev) => {})
