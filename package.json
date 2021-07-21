@@ -4,7 +4,8 @@
   "license": "MIT",
   "scripts": {
     "prettify": "prettier --write .",
-    "build": "parcel build src/popup.html src/contentScript.js src/background.js"
+    "build": "parcel build src/popup.html src/contentScript.js src/background.js",
+    "watch": "parcel watch src/popup.html src/contentScript.js src/background.js"
   },
   "dependencies": {},
   "devDependencies": {
