@@ -106,8 +106,8 @@ async function main() {
 
   const previousPathname = await storage.getPreviousPathname()
   if (previousPathname !== location.pathname) {
-    await setPreviousPathname(location.pathname)
-    await setSpokenCount(0)
+    await storage.setPreviousPathname(location.pathname)
+    await storage.setSpokenCount(0)
   }
 
   observeComments(chatContainer, async (type, name, comment) => {
