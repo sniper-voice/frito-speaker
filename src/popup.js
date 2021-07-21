@@ -15,6 +15,7 @@ async function init() {
   })
 
   const volumeInput = document.getElementById('volumeInput')
+  const volumeValue = await storage.getVolume()
   volumeInput.value = await storage.getVolume()
   volumeInput.addEventListener('change', async (ev) => {
     await storage.setVolume(ev.target.value)

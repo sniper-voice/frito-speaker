@@ -20,44 +20,53 @@ function setStorageValue(key, value) {
   })
 }
 
-export function getSpokenCount() {
-  return parseInt(getStorageValue('spokenCount', '0'), 10)
+export async function getSpokenCount() {
+  const spokenCount = await getStorageValue('spokenCount', '0')
+  return parseInt(spokenCount, 10)
 }
 
 export function setSpokenCount(spokenCount) {
   return setStorageValue('spokenCount', spokenCount.toString())
 }
 
+export function getPreviousPathname() {
+  return getStorageValue('previousPathname', '')
+}
+
 export function setPreviousPathname(previousPathname) {
   return setStorageValue('previousPathname', previousPathname)
 }
 
-export function getMuted() {
-  return getStorageValue('mute', 'off').then((mute) => mute === 'on')
+export async function getMuted() {
+  const mute = await getStorageValue('mute', 'off')
+  return mute === 'on'
 }
 
 export function setMuted(isMuted) {
   return setStorageValue('mute', isMuted ? 'on' : 'off')
 }
 
-export function getVolume() {
-  return parseFloat(getStorageValue('volume', '1.0'))
+export async function getVolume() {
+  const volume = await getStorageValue('volume', '1.0')
+  return parseFloat(volume)
 }
 
 export function setVolume(volume) {
   return setStorageValue('volume', volume.toString())
 }
 
-export function getPitch() {
-  return parseFloat(getStorageValue('pitch', '1.0'))
+export async function getPitch() {
+  const pitch = await getStorageValue('pitch', '1.0')
+  return parseFloat(pitch)
 }
 
 export function setPitch(pitch) {
   return setStorageValue('pitch', pitch.toString())
 }
 
-export function getRate() {
-  return parseFloat(getStorageValue('rate', '1.0'))
+export async function getRate() {
+  const rate = await getStorageValue('rate', '1.0')
+  return parseFloat(rate)
 }
 
 export function setRate(rate) {

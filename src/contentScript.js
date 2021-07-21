@@ -104,8 +104,8 @@ async function main() {
     chatContainer = await waitForChatContainer()
   }
 
-  const items = await getStorageValues()
-  if (items.previousPathname !== location.pathname) {
+  const previousPathname = await storage.getPreviousPathname()
+  if (previousPathname !== location.pathname) {
     await setPreviousPathname(location.pathname)
     await setSpokenCount(0)
   }
