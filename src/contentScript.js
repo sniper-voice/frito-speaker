@@ -1,3 +1,5 @@
+import * as storage from './storage.js'
+
 let chatCount = 0
 
 main()
@@ -78,53 +80,22 @@ function waitForChatContainer() {
 }
 
 async function speak(message) {
-  const items = await getStorageValues()
-
-  const spokenCount = parseFloat(items.spokenCount)
+  const spokenCount = await storage.getSpokenCount()
   if (chatCount < spokenCount) {
     return
   }
 
-  if (items.mute !== 'on') {
+  const isMuted = await storage.getMuted()
+  if (!isMuted) {
     const utterance = new SpeechSynthesisUtterance(message)
     utterance.lang = 'ja-JP'
-    utterance.volume = parseFloat(items.volume)
-    utterance.pitch = parseFloat(items.pitch)
-    utterance.rate = parseFloat(items.rate)
+    utterance.volume = await storage.getVolume()
+    utterance.pitch = await storage.getPitch()
+    utterance.rate = await storage.getRate()
     speechSynthesis.speak(utterance)
   }
 
-  await setSpokenCount(spokenCount + 1)
-}
-
-function setSpokenCount(spokenCount) {
-  return setStorageValue('spokenCount', spokenCount.toString())
-}
-
-function setPreviousPathname(previousPathname) {
-  return setStorageValue('previousPathname', previousPathname)
-}
-
-function setStorageValue(key, value) {
-  return new Promise((resolve, reject) => {
-    chrome.storage.sync.set({ [key]: value }, () => {
-      if (chrome.runtime.lastError) {
-        return reject(chrome.runtime.lastError)
-      }
-      resolve()
-    })
-  })
-}
-
-function getStorageValues() {
-  return new Promise((resolve, reject) => {
-    chrome.storage.sync.get(null, (items) => {
-      if (chrome.runtime.lastError) {
-        return reject(chrome.runtime.lastError)
-      }
-      resolve(items)
-    })
-  })
+  await storage.setSpokenCount(spokenCount + 1)
 }
 
 async function main() {

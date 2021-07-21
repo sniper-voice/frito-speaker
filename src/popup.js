@@ -1,86 +1,34 @@
+import * as storage from './storage.js'
+
 init()
 
 async function init() {
-  const isMuted = await getMuted()
+  const isMuted = await storage.getMuted()
   const muteButton = document.getElementById('muteButton')
   muteButton.innerText = isMuted ? 'ミュート解除' : 'ミュート'
   muteButton.addEventListener('click', async (ev) => {
-    const isMuted = await getMuted()
+    const isMuted = await storage.getMuted()
     const newValue = !isMuted
     muteButton.innerText = newValue ? 'ミュート解除' : 'ミュート'
     chrome.action.setBadgeText({ text: newValue ? 'MUTE' : '' })
-    await setMuted(newValue)
+    await storage.setMuted(newValue)
   })
 
   const volumeInput = document.getElementById('volumeInput')
-  volumeInput.value = await getVolume()
+  volumeInput.value = await storage.getVolume()
   volumeInput.addEventListener('change', async (ev) => {
-    await setVolume(ev.target.value)
+    await storage.setVolume(ev.target.value)
   })
 
   const pitchInput = document.getElementById('pitchInput')
-  pitchInput.value = await getPitch()
+  pitchInput.value = await storage.getPitch()
   pitchInput.addEventListener('change', async (ev) => {
-    await setPitch(ev.target.value)
+    await storage.setPitch(ev.target.value)
   })
 
   const rateInput = document.getElementById('rateInput')
-  rateInput.value = await getRate()
+  rateInput.value = await storage.getRate()
   rateInput.addEventListener('change', async (ev) => {
-    await setRate(ev.target.value)
-  })
-}
-
-function setMuted(isMuted) {
-  return setStorageValue('mute', isMuted ? 'on' : 'off')
-}
-
-function getMuted() {
-  return getStorageValue('mute').then((mute) => mute === 'on')
-}
-
-function setVolume(volume) {
-  return setStorageValue('volume', volume)
-}
-
-function getVolume() {
-  return getStorageValue('volume')
-}
-
-function setPitch(pitch) {
-  return setStorageValue('pitch', pitch)
-}
-
-function getPitch() {
-  return getStorageValue('pitch')
-}
-
-function setRate(rate) {
-  return setStorageValue('rate', rate)
-}
-
-function getRate() {
-  return getStorageValue('rate')
-}
-
-function setStorageValue(key, value) {
-  return new Promise((resolve, reject) => {
-    chrome.storage.sync.set({ [key]: value }, () => {
-      if (chrome.runtime.lastError) {
-        return reject(chrome.runtime.lastError)
-      }
-      resolve()
-    })
-  })
-}
-
-function getStorageValue(key) {
-  return new Promise((resolve, reject) => {
-    chrome.storage.sync.get(key, (items) => {
-      if (chrome.runtime.lastError) {
-        return reject(chrome.runtime.lastError)
-      }
-      resolve(items[key])
-    })
+    await storage.setRate(ev.target.value)
   })
 }
