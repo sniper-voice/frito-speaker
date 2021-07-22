@@ -1,5 +1,6 @@
 import * as storage from './storage.js'
 import { filterPronounceable } from './filterPronounceable.js'
+import { transformMessage } from './transformMessage.js'
 
 let chatCount = 0
 
@@ -89,7 +90,8 @@ async function speak(message) {
   const isMuted = await storage.getMuted()
   if (!isMuted) {
     const pronounceableMessage = filterPronounceable(message)
-    const utterance = new SpeechSynthesisUtterance(pronounceableMessage)
+    const transformedMessage = transformedMessage(pronounceableMessage)
+    const utterance = new SpeechSynthesisUtterance(transformedMessage)
     utterance.lang = 'ja-JP'
     utterance.volume = await storage.getVolume()
     utterance.pitch = await storage.getPitch()
