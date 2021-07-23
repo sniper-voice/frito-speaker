@@ -19,18 +19,26 @@ function observeComments(target, callback) {
         }
 
         if (node.classList.contains('chat')) {
-          const name = node.querySelector('.chat__contents__name').innerText
+          const from = node.querySelector('.chat__contents__name').innerText
           const comment = node.querySelector(
             '.chat__contents__comment'
           ).innerText
-          callback('comment', name, comment)
+          callback({ type: 'comment', from, comment })
         } else if (node.classList.contains('joinRoomChat')) {
-          callback('join', null, node.innerText)
+          callback({ type: 'join', comment: node.innerText })
         } else if (node.classList.contains('likeChat')) {
-          const name = node.querySelector(
+          const from = node.querySelector(
             '.likeChat__inner__sendUserName'
           ).innerText
-          callback('like', name, null)
+          callback({ type: 'like', from })
+        } else if (node.classList.contains('yellChat')) {
+          const from = node.querySelector(
+            '.yellChat__inner__sendUserName'
+          ).innerText
+          const to = node.querySelector(
+            '.yellChat__inner__getUserName'
+          ).innerText
+          callback({ type: 'yell', from, to })
         }
       }
     }
@@ -119,15 +127,18 @@ async function main() {
     await storage.setSpokenCount(0)
   }
 
-  observeComments(chatContainer, async (type, name, comment) => {
+  observeComments(chatContainer, async (payload) => {
     let message
-    switch (type) {
-      case 'like':
-        message = `${name}がいいねを送りました!`
-        break
+    switch (payload.type) {
       case 'comment':
       case 'join':
-        message = comment
+        message = payload.comment
+        break
+      case 'like':
+        message = `${payload.from}がいいねを送りました!`
+        break
+      case 'yell':
+        message = `${payload.from}が${payload.to}にエール!`
         break
       default:
         message = ''
