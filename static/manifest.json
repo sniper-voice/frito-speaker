@@ -3,7 +3,7 @@
   "description": "ボイコネのフリートークコメントを機械音声で読み上げます",
   "version": "0.1.1",
   "manifest_version": 3,
-  "permissions": ["declarativeContent", "storage"],
+  "permissions": ["declarativeContent", "storage", "tabs"],
   "content_scripts": [
     {
       "matches": ["https://stage.boikone.jp/*"],

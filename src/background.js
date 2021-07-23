@@ -18,4 +18,11 @@ chrome.runtime.onInstalled.addListener(async () => {
       },
     ])
   })
+
+  const boikoneTabs = await chrome.tabs.query({
+    url: 'https://stage.boikone.jp/*',
+  })
+  for (const tab of boikoneTabs) {
+    chrome.tabs.reload(tab.id)
+  }
 })
