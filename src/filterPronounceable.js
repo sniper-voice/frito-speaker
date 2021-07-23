@@ -21,7 +21,7 @@ const acceptCharacterClass =
   // kanji
   '\u4e00-\u9faf\u3400-\u4dbf' +
   // pronounceable symbols
-  '?!？！＋－＝'
+  '?!？！＋－＝ー'
 
 const charactersRejected = new RegExp(`[^${acceptCharacterClass}]`, 'g')
 

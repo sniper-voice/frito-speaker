@@ -37,15 +37,19 @@ test('it passes numbers', () => {
   expect(filterPronounceable(numbers)).toBe(numbers)
 })
 
+test('it passes long tone symbol', () => {
+  expect(filterPronounceable('エール')).toBe('エール')
+})
+
 test('it sanitizes ascii arts', () => {
   expect(filterPronounceable('(*･ω･ﾉﾉﾞ☆ﾊﾟﾁﾊﾟﾁﾊﾟﾁﾊﾟﾁ')).toBe('ﾉﾉﾞﾊﾟﾁﾊﾟﾁﾊﾟﾁﾊﾟﾁ')
   expect(filterPronounceable('(*´▽`ﾉﾉﾊﾟﾁﾊﾟﾁ☆ﾟ･:*｡+.♪')).toBe('ﾉﾉﾊﾟﾁﾊﾟﾁﾟ')
 })
 
 test('it passes exclamation mark', () => {
-  expect(filterPronounceable('やったー!！')).toBe('やった!！')
+  expect(filterPronounceable('やったー!！')).toBe('やったー!！')
 })
 
 test('it passes question mark', () => {
-  expect(filterPronounceable('やったー？?')).toBe('やった？?')
+  expect(filterPronounceable('やったー？?')).toBe('やったー？?')
 })
