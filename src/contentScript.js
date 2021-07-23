@@ -26,6 +26,11 @@ function observeComments(target, callback) {
           callback('comment', name, comment)
         } else if (node.classList.contains('joinRoomChat')) {
           callback('join', null, node.innerText)
+        } else if (node.classList.contains('likeChat')) {
+          const name = node.querySelector(
+            '.likeChat__inner__sendUserName'
+          ).innerText
+          callback('like', name, null)
         }
       }
     }
@@ -115,7 +120,21 @@ async function main() {
   }
 
   observeComments(chatContainer, async (type, name, comment) => {
-    await speak(comment)
+    let message
+    switch (type) {
+      case 'like':
+        message = `${name}がいいねを送りました!`
+        break
+      case 'comment':
+      case 'join':
+        message = comment
+        break
+      default:
+        message = ''
+    }
+
+    await speak(message)
+
     chatCount++
   })
 }
