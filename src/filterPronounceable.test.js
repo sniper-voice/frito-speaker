@@ -32,6 +32,11 @@ test('it passes latin alphabet', () => {
   expect(filterPronounceable(latinAlphabet)).toBe(latinAlphabet)
 })
 
+test('it passes numbers', () => {
+  const numbers = '0123456789０１２３４５６７８９'
+  expect(filterPronounceable(numbers)).toBe(numbers)
+})
+
 test('it sanitizes ascii arts', () => {
   expect(filterPronounceable('(*･ω･ﾉﾉﾞ☆ﾊﾟﾁﾊﾟﾁﾊﾟﾁﾊﾟﾁ')).toBe('ﾉﾉﾞﾊﾟﾁﾊﾟﾁﾊﾟﾁﾊﾟﾁ')
   expect(filterPronounceable('(*´▽`ﾉﾉﾊﾟﾁﾊﾟﾁ☆ﾟ･:*｡+.♪')).toBe('ﾉﾉﾊﾟﾁﾊﾟﾁﾟ')

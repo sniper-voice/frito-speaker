@@ -2,6 +2,8 @@
 const acceptCharacterClass =
   // latin alphabet
   'a-zA-Z' +
+  // numbers
+  '0-9' +
   // odoriji
   '\u3005\u309d\u30fd\u309e\u30fe\u30eb\u303b\u3031-\u3035' +
   // hiragana
