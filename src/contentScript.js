@@ -90,7 +90,7 @@ async function speak(message) {
   const isMuted = await storage.getMuted()
   if (!isMuted) {
     const pronounceableMessage = filterPronounceable(message)
-    const transformedMessage = transformedMessage(pronounceableMessage)
+    const transformedMessage = transformMessage(pronounceableMessage)
     const utterance = new SpeechSynthesisUtterance(transformedMessage)
     utterance.lang = 'ja-JP'
     utterance.volume = await storage.getVolume()
