@@ -2,7 +2,8 @@ import * as storage from './storage.js'
 import { filterPronounceable } from './filterPronounceable.js'
 import { transformMessage } from './transformMessage.js'
 
-let chatCount = 0
+let observedCount = 0
+let spokenCount = 0
 
 main()
 
@@ -95,11 +96,6 @@ function waitForChatContainer() {
 }
 
 async function speak(message) {
-  const spokenCount = await storage.getSpokenCount()
-  if (chatCount < spokenCount) {
-    return
-  }
-
   const isMuted = await storage.getMuted()
   if (!isMuted) {
     const pronounceableMessage = filterPronounceable(message)
@@ -111,8 +107,6 @@ async function speak(message) {
     utterance.rate = await storage.getRate()
     speechSynthesis.speak(utterance)
   }
-
-  await storage.setSpokenCount(spokenCount + 1)
 }
 
 async function main() {
@@ -127,7 +121,9 @@ async function main() {
     await storage.setSpokenCount(0)
   }
 
-  observeComments(chatContainer, async (payload) => {
+  spokenCount = await storage.getSpokenCount()
+
+  observeComments(chatContainer, (payload) => {
     let message
     switch (payload.type) {
       case 'comment':
@@ -144,8 +140,12 @@ async function main() {
         message = ''
     }
 
-    await speak(message)
+    if (spokenCount <= observedCount) {
+      speak(message)
+      spokenCount++
+      storage.setSpokenCount(spokenCount)
+    }
 
-    chatCount++
+    observedCount++
   })
 }
