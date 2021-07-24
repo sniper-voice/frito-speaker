@@ -110,8 +110,8 @@ function observeCountDown(callback) {
 }
 
 async function speak(message) {
-  const isMuted = await storage.getMuted()
-  if (!isMuted) {
+  const muted = await storage.isMuted()
+  if (!muted) {
     const pronounceableMessage = filterPronounceable(message)
     const transformedMessage = transformMessage(pronounceableMessage)
     const utterance = new SpeechSynthesisUtterance(transformedMessage)
@@ -169,20 +169,26 @@ async function main() {
       return
     }
 
-    switch (remainingSeconds) {
-      case 1200: // 20 miniutes
-        speak('残り20分')
-        break
-      case 600: // 10 miniutes
-        speak('残り10分')
-        break
-      case 300: // 5 miniutes
-        speak('残り5分')
-        break
-      case 60: // 1 miniutes
-        speak('残り1分')
-        break
-    }
+    storage.isTimesEnabled().then((enabled) => {
+      if (!enabled) {
+        return
+      }
+
+      switch (remainingSeconds) {
+        case 1200: // 20 miniutes
+          speak('残り20分')
+          break
+        case 600: // 10 miniutes
+          speak('残り10分')
+          break
+        case 300: // 5 miniutes
+          speak('残り5分')
+          break
+        case 60: // 1 miniutes
+          speak('残り1分')
+          break
+      }
+    })
 
     previousSeconds = remainingSeconds
   })

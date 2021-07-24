@@ -1,10 +1,10 @@
-import { getMuted } from './storage.js'
+import { isMuted } from './storage.js'
 
 chrome.runtime.onInstalled.addListener(async () => {
   chrome.action.disable()
 
-  const isMuted = await getMuted()
-  chrome.action.setBadgeText({ text: isMuted ? 'MUTE' : '' })
+  const muted = await isMuted()
+  chrome.action.setBadgeText({ text: muted ? 'MUTE' : '' })
 
   chrome.declarativeContent.onPageChanged.removeRules(undefined, () => {
     chrome.declarativeContent.onPageChanged.addRules([

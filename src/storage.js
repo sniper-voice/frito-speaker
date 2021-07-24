@@ -37,13 +37,22 @@ export function setPreviousPathname(previousPathname) {
   return setStorageValue('previousPathname', previousPathname)
 }
 
-export async function getMuted() {
+export async function isMuted() {
   const mute = await getStorageValue('mute', 'off')
   return mute === 'on'
 }
 
-export function setMuted(isMuted) {
-  return setStorageValue('mute', isMuted ? 'on' : 'off')
+export function setMuted(muted) {
+  return setStorageValue('mute', muted ? 'on' : 'off')
+}
+
+export async function isTimesEnabled() {
+  const times = await getStorageValue('times', 'on')
+  return times === 'on'
+}
+
+export function setTimesEnabled(enabled) {
+  return setStorageValue('times', enabled ? 'on' : 'off')
 }
 
 export async function getVolume() {

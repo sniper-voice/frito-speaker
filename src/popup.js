@@ -3,12 +3,12 @@ import * as storage from './storage.js'
 init()
 
 async function init() {
-  const isMuted = await storage.getMuted()
+  const muted = await storage.isMuted()
   const muteButton = document.getElementById('muteButton')
-  muteButton.innerText = isMuted ? 'ミュート解除' : 'ミュート'
+  muteButton.innerText = muted ? 'ミュート解除' : 'ミュート'
   muteButton.addEventListener('click', async (ev) => {
-    const isMuted = await storage.getMuted()
-    const newValue = !isMuted
+    const muted = await storage.isMuted()
+    const newValue = !muted
     muteButton.innerText = newValue ? 'ミュート解除' : 'ミュート'
     chrome.action.setBadgeText({ text: newValue ? 'MUTE' : '' })
     await storage.setMuted(newValue)
@@ -18,18 +18,24 @@ async function init() {
   const volumeValue = await storage.getVolume()
   volumeInput.value = await storage.getVolume()
   volumeInput.addEventListener('change', async (ev) => {
-    await storage.setVolume(ev.target.value)
+    await storage.setVolume(ev.currentTarget.value)
   })
 
   const pitchInput = document.getElementById('pitchInput')
   pitchInput.value = await storage.getPitch()
   pitchInput.addEventListener('change', async (ev) => {
-    await storage.setPitch(ev.target.value)
+    await storage.setPitch(ev.currentTarget.value)
   })
 
   const rateInput = document.getElementById('rateInput')
   rateInput.value = await storage.getRate()
   rateInput.addEventListener('change', async (ev) => {
-    await storage.setRate(ev.target.value)
+    await storage.setRate(ev.currentTarget.value)
+  })
+
+  const timesCheckbox = document.getElementById('timesCheckbox')
+  timesCheckbox.checked = await storage.isTimesEnabled()
+  timesCheckbox.addEventListener('change', async (ev) => {
+    await storage.setTimesEnabled(ev.currentTarget.checked)
   })
 }
