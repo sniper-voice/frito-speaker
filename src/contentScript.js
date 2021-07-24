@@ -2,9 +2,6 @@ import * as storage from './storage.js'
 import { filterPronounceable } from './filterPronounceable.js'
 import { transformMessage } from './transformMessage.js'
 
-let observedCount = 0
-let spokenCount = 0
-
 main()
 
 function observeComments(target, callback) {
@@ -95,6 +92,23 @@ function waitForChatContainer() {
   })
 }
 
+function observeCountDown(callback) {
+  setInterval(() => {
+    const countDownMinutes = document.querySelector(
+      '.headerCountDown .countDown__minutes'
+    )
+    const countDownSeconds = document.querySelector(
+      '.headerCountDown .countDown__seconds'
+    )
+    if (!countDownMinutes || !countDownSeconds) {
+      return
+    }
+    const minutes = parseInt(countDownMinutes.innerText, 10)
+    const seconds = parseInt(countDownSeconds.innerText, 10)
+    callback(minutes * 60 + seconds)
+  }, 1000)
+}
+
 async function speak(message) {
   const isMuted = await storage.getMuted()
   if (!isMuted) {
@@ -121,8 +135,8 @@ async function main() {
     await storage.setSpokenCount(0)
   }
 
-  spokenCount = await storage.getSpokenCount()
-
+  let observedCount = 0
+  let spokenCount = await storage.getSpokenCount()
   observeComments(chatContainer, (payload) => {
     let message
     switch (payload.type) {
@@ -147,5 +161,29 @@ async function main() {
     }
 
     observedCount++
+  })
+
+  let previousSeconds = null
+  observeCountDown((remainingSeconds) => {
+    if (previousSeconds === remainingSeconds) {
+      return
+    }
+
+    switch (remainingSeconds) {
+      case 1200: // 20 miniutes
+        speak('残り20分')
+        break
+      case 600: // 10 miniutes
+        speak('残り10分')
+        break
+      case 300: // 5 miniutes
+        speak('残り5分')
+        break
+      case 60: // 1 miniutes
+        speak('残り1分')
+        break
+    }
+
+    previousSeconds = remainingSeconds
   })
 }
