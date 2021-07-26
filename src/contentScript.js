@@ -7,10 +7,6 @@ main()
 function observeComments(target, callback) {
   const observer = new MutationObserver((mutationList) => {
     for (const mutation of mutationList) {
-      if (mutation.type !== 'childList') {
-        continue
-      }
-
       for (const node of mutation.addedNodes) {
         if (node.nodeType !== Node.ELEMENT_NODE) {
           continue
@@ -46,49 +42,44 @@ function observeComments(target, callback) {
     childList: true,
   }
   observer.observe(target, observerOptions)
+
+  return () => {
+    observer.disconnect
+  }
 }
 
 function waitForChatContainer() {
   return new Promise((resolve) => {
-    const observer = new MutationObserver((mutationList) => {
-      if (!location.pathname.startsWith('/free/stage/')) {
+    const check = () => {
+      // Skip if user is in live
+      if (!location.pathname.startsWith('/free/')) {
+        setTimeout(check, 300)
         return
       }
 
-      for (const mutation of mutationList) {
-        if (mutation.type !== 'childList') {
-          continue
-        }
-
-        for (const node of mutation.addedNodes) {
-          if (node.nodeType !== Node.ELEMENT_NODE) {
-            continue
-          }
-
-          if (node.classList.contains('chatContainer__statusOpen__chat')) {
-            resolve(node)
-            observer.disconnect()
-            return
-          }
-
-          const chatContainer = document.querySelector(
-            '.chatContainer__statusOpen__chat'
-          )
-          if (chatContainer) {
-            resolve(chatContainer)
-            observer.disconnect()
-            return
-          }
-        }
+      const chatContainer = document.querySelector(
+        '.chatContainer__statusOpen__chat'
+      )
+      if (chatContainer) {
+        resolve(chatContainer)
+      } else {
+        setTimeout(check, 300)
       }
-    })
-
-    const observerOptions = {
-      childList: true,
-      subtree: true,
     }
+    check()
+  })
+}
 
-    observer.observe(document.documentElement, observerOptions)
+function waitForElementRemoved(element) {
+  return new Promise((resolve) => {
+    const check = () => {
+      if (element.isConnected) {
+        setTimeout(check, 300)
+      } else {
+        resolve()
+      }
+    }
+    check()
   })
 }
 
@@ -123,46 +114,7 @@ async function speak(message) {
   }
 }
 
-async function main() {
-  let chatContainer = document.querySelector('.chatContainer__statusOpen__chat')
-  if (!chatContainer) {
-    chatContainer = await waitForChatContainer()
-  }
-
-  const previousPathname = await storage.getPreviousPathname()
-  if (previousPathname !== location.pathname) {
-    await storage.setPreviousPathname(location.pathname)
-    await storage.setSpokenCount(0)
-  }
-
-  let observedCount = 0
-  let spokenCount = await storage.getSpokenCount()
-  observeComments(chatContainer, (payload) => {
-    let message
-    switch (payload.type) {
-      case 'comment':
-      case 'join':
-        message = payload.comment
-        break
-      case 'like':
-        message = `${payload.from}がいいねを送りました!`
-        break
-      case 'yell':
-        message = `${payload.from}が${payload.to}にエール!`
-        break
-      default:
-        message = ''
-    }
-
-    if (spokenCount <= observedCount) {
-      speak(message)
-      spokenCount++
-      storage.setSpokenCount(spokenCount)
-    }
-
-    observedCount++
-  })
-
+function speakTimes() {
   let previousSeconds = null
   observeCountDown((remainingSeconds) => {
     if (previousSeconds === remainingSeconds) {
@@ -192,4 +144,65 @@ async function main() {
 
     previousSeconds = remainingSeconds
   })
+}
+
+async function speakComments(chatContainer) {
+  let observedCount = 0
+  let spokenCount = await storage.getSpokenCount()
+  let spokenCountWritten = null
+
+  const disconnect = observeComments(chatContainer, (payload) => {
+    let message
+    switch (payload.type) {
+      case 'comment':
+      case 'join':
+        message = payload.comment
+        break
+      case 'like':
+        message = `${payload.from}がいいねを送りました!`
+        break
+      case 'yell':
+        message = `${payload.from}が${payload.to}にエール!`
+        break
+      default:
+        message = ''
+    }
+
+    if (spokenCount <= observedCount) {
+      speak(message)
+      spokenCount++
+      spokenCountWritten = storage.setSpokenCount(spokenCount)
+    }
+
+    observedCount++
+  })
+
+  await waitForElementRemoved(chatContainer)
+
+  if (spokenCountWritten) {
+    await spokenCountWritten
+  }
+
+  disconnect()
+}
+
+async function main() {
+  for (;;) {
+    const chatContainer = await waitForChatContainer()
+
+    if (!location.pathname.startsWith('/free/')) {
+      continue
+    }
+
+    if (location.pathname.startsWith('/free/stage/')) {
+      const previousPathname = await storage.getPreviousPathname()
+      if (previousPathname !== location.pathname) {
+        await storage.setPreviousPathname(location.pathname)
+        await storage.setSpokenCount(0)
+        speakTimes()
+      }
+    }
+
+    await speakComments(chatContainer)
+  }
 }
