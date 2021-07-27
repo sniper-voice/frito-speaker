@@ -48,7 +48,7 @@ function observeComments(target, callback) {
   }
 }
 
-function waitForChatContainer() {
+function waitForFreeTalkChatContainer() {
   return new Promise((resolve) => {
     const check = () => {
       // Skip if user is in live
@@ -188,11 +188,7 @@ async function speakComments(chatContainer) {
 
 async function main() {
   for (;;) {
-    const chatContainer = await waitForChatContainer()
-
-    if (!location.pathname.startsWith('/free/')) {
-      continue
-    }
+    const chatContainer = await waitForFreeTalkChatContainer()
 
     if (location.pathname.startsWith('/free/stage/')) {
       const previousPathname = await storage.getPreviousPathname()
