@@ -44,3 +44,11 @@ test('it keeps 8 in a number', () => {
   expect(transformMessage('889')).toBe('889')
   expect(transformMessage('788')).toBe('788')
 })
+
+test('it transforms prpr into ぺろぺろ', () => {
+  expect(transformMessage('prpr')).toBe('ぺろぺろ')
+})
+
+test('it transforms kwsk into くわしく', () => {
+  expect(transformMessage('kwsk')).toBe('くわしく')
+})

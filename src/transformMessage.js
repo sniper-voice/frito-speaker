@@ -9,4 +9,6 @@ export function transformMessage(message) {
     .replaceAll(/([^\d]|^)(88+)([^\d]|$)/g, (match, p1, p2, p3) => {
       return p1 + 'ぱち'.repeat(Math.min(p2.length, 4)) + p3
     })
+    .replaceAll(/prpr/g, 'ぺろぺろ')
+    .replaceAll(/kwsk/g, 'くわしく')
 }
