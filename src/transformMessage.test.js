@@ -1,22 +1,22 @@
 import { transformMessage } from './transformMessage.js'
 
-test('it transforms a series of w into くさ', () => {
-  expect(transformMessage('w')).toBe('くさ')
-  expect(transformMessage('ww')).toBe('くさくさ')
-  expect(transformMessage('www')).toBe('くさくさくさ')
-  expect(transformMessage('wwww')).toBe('くさくさくさ')
-  expect(transformMessage('ｗ')).toBe('くさ')
-  expect(transformMessage('ｗｗ')).toBe('くさくさ')
-  expect(transformMessage('ｗｗｗ')).toBe('くさくさくさ')
-  expect(transformMessage('ｗｗｗｗ')).toBe('くさくさくさ')
+test('it transforms a series of w into わら', () => {
+  expect(transformMessage('w')).toBe('わら')
+  expect(transformMessage('ww')).toBe('わらわら')
+  expect(transformMessage('www')).toBe('わらわらわら')
+  expect(transformMessage('wwww')).toBe('わらわらわら')
+  expect(transformMessage('ｗ')).toBe('わら')
+  expect(transformMessage('ｗｗ')).toBe('わらわら')
+  expect(transformMessage('ｗｗｗ')).toBe('わらわらわら')
+  expect(transformMessage('ｗｗｗｗ')).toBe('わらわらわら')
 })
 
 test('it transforms w mixed with hiragana', () => {
-  expect(transformMessage('まじかw')).toBe('まじかくさ')
+  expect(transformMessage('まじかw')).toBe('まじかわら')
   expect(transformMessage('まじかw くっそウケるんだがwww')).toBe(
-    'まじかくさ くっそウケるんだがくさくさくさ'
+    'まじかわら くっそウケるんだがわらわらわら'
   )
-  expect(transformMessage('ww ちょw')).toBe('くさくさ ちょくさ')
+  expect(transformMessage('ww ちょw')).toBe('わらわら ちょわら')
 })
 
 test('it keeps w in English words', () => {
