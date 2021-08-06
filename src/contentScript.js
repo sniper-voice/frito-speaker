@@ -103,9 +103,9 @@ function observeCountDown(callback) {
 async function speak(message) {
   const muted = await storage.isMuted()
   if (!muted) {
-    const pronounceableMessage = filterPronounceable(message)
-    const transformedMessage = transformMessage(pronounceableMessage)
-    const utterance = new SpeechSynthesisUtterance(transformedMessage)
+    const transformedMessage = transformMessage(message)
+    const pronounceableMessage = filterPronounceable(transformedMessage)
+    const utterance = new SpeechSynthesisUtterance(pronounceableMessage)
     utterance.lang = 'ja-JP'
     utterance.volume = await storage.getVolume()
     utterance.pitch = await storage.getPitch()
