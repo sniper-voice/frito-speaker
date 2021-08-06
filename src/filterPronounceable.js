@@ -26,5 +26,5 @@ const acceptCharacterClass =
 const charactersRejected = new RegExp(`[^${acceptCharacterClass}]`, 'g')
 
 export function filterPronounceable(message) {
-  return message.replaceAll(charactersRejected, '')
+  return message.replace(charactersRejected, '')
 }

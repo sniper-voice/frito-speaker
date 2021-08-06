@@ -27,6 +27,10 @@ test('it drops Japanese punctuati', () => {
   expect(filterPronounceable(japaneseSymbols)).toBe('')
 })
 
+test('it drops all occurrences of a target term', () => {
+  expect(filterPronounceable('〒あいうえお〒')).toBe('あいうえお')
+})
+
 test('it passes latin alphabet', () => {
   const latinAlphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
   expect(filterPronounceable(latinAlphabet)).toBe(latinAlphabet)

@@ -11,6 +11,12 @@ test('it transforms a series of w into わら', () => {
   expect(transformMessage('ｗｗｗｗ')).toBe('わらわらわら')
 })
 
+test('it transforms all occurrences of a target term', () => {
+  expect(transformMessage('くっそwまじかwww')).toBe(
+    'くっそわらまじかわらわらわら'
+  )
+})
+
 test('it transforms w mixed with hiragana', () => {
   expect(transformMessage('まじかw')).toBe('まじかわら')
   expect(transformMessage('まじかw くっそウケるんだがwww')).toBe(
@@ -51,4 +57,10 @@ test('it transforms prpr into ぺろぺろ', () => {
 
 test('it transforms kwsk into くわしく', () => {
   expect(transformMessage('kwsk')).toBe('くわしく')
+})
+
+test('it transforms defined proper nouns', () => {
+  expect(transformMessage('言峰空也')).toBe('ことみねくうや')
+  expect(transformMessage('南月')).toBe('なつき')
+  expect(transformMessage('女狐リラ')).toBe('めぎつねりら')
 })
