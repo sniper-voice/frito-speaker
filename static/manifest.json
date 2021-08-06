@@ -1,7 +1,7 @@
 {
   "name": "フリトスピーカー",
   "description": "ボイコネのフリートークコメントを機械音声で読み上げます",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "manifest_version": 3,
   "permissions": ["declarativeContent", "storage", "tabs"],
   "content_scripts": [
